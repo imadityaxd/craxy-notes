@@ -1,0 +1,81 @@
+# --------------------------------------------
+# Node / Backend
+# --------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+coverage/
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+firebase_service_account.json
+firebase-adminsdk.json
+
+# Logs
+logs/
+*.log
+*.csv
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+.tmp/
+temp/
+.cache/
+.DS_Store
+
+# --------------------------------------------
+# Frontend - React (client folder)
+# --------------------------------------------
+client/node_modules/
+client/build/
+client/.env
+client/.env.local
+client/.env.production
+client/.env.development
+
+# React cache
+client/.cache/
+client/.parcel-cache/
+
+# --------------------------------------------
+# Firebase Related Files
+# --------------------------------------------
+.firebase/
+*.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+
+# Ignore uploads or stored media (optional: remove if needed)
+uploads/
+public/uploads/
+storage/
+
+# Firebase Auth Emulator Data
+firebase.json
+firestore.indexes.json
+firestore.rules
+
+# --------------------------------------------
+# Git / System Files
+# --------------------------------------------
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# VSCode
+.vscode/
+.idea/
+
+# --------------------------------------------
+# Docker (optional)
+# --------------------------------------------
+docker-data/
+docker-compose.override.yml
