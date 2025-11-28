@@ -5,11 +5,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useFetchNotes from '../hooks/useFetchNotes';
 import NoteCard from '../components/NoteCard'; 
 import { Search, Filter } from 'lucide-react'; 
-import { FOET_BRANCHES, getSubjects } from '../utils/syllabusData'; 
+import { FOET_BRANCHES, getSubjects } from '../utils/syllabusData'; // Import accurate data map
 
 const SEMESTERS = [1, 2, 3, 4, 5, 6, 7, 8];
 
-// Component to display notes in a responsive grid
+// Component to display notes in a responsive multi-column grid
 const SubjectNotesGrid = ({ subject }) => {
     
     const hasNotes = subject.items && subject.items.length > 0;
@@ -21,14 +21,16 @@ const SubjectNotesGrid = ({ subject }) => {
             </h3>
             
             {hasNotes ? (
-                // CRITICAL FIX: Responsive Grid Layout for Note Cards (3 columns on desktop)
+                // CRITICAL FIX: The multi-grid applies to the individual notes list (subject.items)
+                // Added 4 columns for extra-large screens (xl:grid-cols-4)
                 <div className="grid gap-4 
                               grid-cols-1   /* Mobile (default) */ 
-                              sm:grid-cols-2 /* Tablet */ 
+                              md:grid-cols-2 /* Medium/Tablet */ 
                               lg:grid-cols-3 /* Large Screens/Desktop (3 columns) */
+                              xl:grid-cols-4 /* Extra Large Screens (4 columns) */
                               ">
                     {subject.items.map(note => (
-                        <NoteCard key={note.id} note={note} />
+                        <NoteCard key={note.id} note={note} className="w-full" /> // Ensuring note card takes full cell width
                     ))}
                 </div>
             ) : (
@@ -50,7 +52,7 @@ const NoteBrowser = () => {
     const selectedBranch = urlBranch ? urlBranch.toUpperCase() : null;
     const selectedSemester = urlSemester ? parseInt(urlSemester) : null;
     
-    // 2. SEARCH STATE: New state for search term
+    // 2. SEARCH STATE
     const [searchTerm, setSearchTerm] = useState(''); 
     
     // 3. FILTER STATE: Manage which specific subject the user has selected
@@ -59,13 +61,13 @@ const NoteBrowser = () => {
     // 4. Fetch data using the custom hook
     const { notes, loading, error } = useFetchNotes(selectedBranch, selectedSemester);
 
-    // Get human-readable names for display
+    // Get human-readable names for display (using imported data)
     const branchName = FOET_BRANCHES.find(b => b.code === selectedBranch)?.name || selectedBranch;
     
     // Get the full list of expected subjects for this semester (from syllabusData.js)
     const expectedSubjects = getSubjects(selectedBranch, selectedSemester); 
     
-    // 5. Apply FILTERS (Subject and Search Term)
+    // 5. Apply FILTERS (Search Term)
     const finalFilteredNotes = notes.map(subjectGroup => {
         // Step A: Filter by Search Term (Case-insensitive match on note title)
         const searchedItems = subjectGroup.items.filter(note => 
@@ -86,9 +88,11 @@ const NoteBrowser = () => {
         : finalFilteredNotes;
 
 
-    // Helper functions (unchanged)
+    // Helper functions 
     const handleBranchChange = (event) => {
         const newBranchCode = event.target.value;
+        // Reset subject filter when branch changes
+        setSelectedSubjectCode(null); 
         navigate(`/notes/${newBranchCode}/${selectedSemester || 1}`);
     };
 
@@ -98,9 +102,10 @@ const NoteBrowser = () => {
     };
 
     const handleSemesterChange = (newSemester) => {
+        // Reset subject filter when semester changes
+        setSelectedSubjectCode(null); 
         navigate(`/notes/${selectedBranch}/${newSemester}`);
     };
-    // End Helper functions
     
     if (loading) {
         return <div className="text-center p-8 text-lg font-semibold text-gray-600">Loading notes...</div>;
@@ -120,7 +125,7 @@ const NoteBrowser = () => {
             <div className="w-full lg:w-80 bg-white p-4 shadow-2xl lg:h-screen lg:sticky lg:top-0 border-r border-gray-100">
                 <h3 className="text-xl font-bold text-blue-800 mb-4 border-b pb-2">FOET Hierarchy</h3>
                 
-                {/* Search Bar (NOW FUNCTIONAL) */}
+                {/* Search Bar */}
                 <div className="mb-4 relative">
                     <input 
                         type="text" 
