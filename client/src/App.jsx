@@ -1,33 +1,39 @@
 // client/src/App.jsx
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext'; // Import the Auth Provider
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Import Navigate
+import { AuthProvider } from './context/AuthContext'; 
 
 // Import Pages/Components
-import AuthBootstrapper from './components/AuthBootstrapper'; 
+import AuthPage from './pages/AuthPage.jsx'; 
 import NoteBrowser from './pages/NoteBrowser'; 
 import UploadForm from './pages/UploadForm'; 
-import Header from './components/Header'; // Placeholder for site navigation
+import Header from './components/Header'; 
 
 function App() {
   return (
-    <AuthProvider> {/* Wrap the whole app with the Auth Provider */}
+    <AuthProvider>
       <Router>
         <div className="min-h-screen bg-gray-50">
-          <Header /> {/* Will show navigation bar */}
+          <Header /> 
           <main className="container mx-auto p-4">
             <Routes>
-              {/* 1. INITIAL UNLOCK ROUTE (Temporary Root) */}
-              <Route path="/" element={<AuthBootstrapper />} /> 
+              
+              {/* 1. DEFAULT ROUTE: Redirects to a specific view (e.g., CSE Semester 1) or the main browser */}
+              {/* Changed: Root path now redirects to the general Notes Browser page */}
+              <Route path="/" element={<Navigate to="/notes/CSE/1" replace />} /> 
 
-              {/* 2. BROWSING NOTES (Public Access) */}
+              {/* 2. BROWSING NOTES (Public Access) - This is the new primary homepage content */}
+              {/* Uses optional parameters for flexibility in linking */}
               <Route path="/notes/:branch/:semester" element={<NoteBrowser />} /> 
               
               {/* 3. SECURED UPLOAD ROUTE (Requires Auth & Admin/Contributor Role) */}
               <Route path="/upload" element={<UploadForm />} /> 
 
-              {/* 4. Fallback */}
+              {/* 4. UTILITY ROUTE: Keep the bootstrapper accessible via a specific URL for debugging/new users */}
+              <Route path="/auth-unlock" element={<AuthPage />} /> 
+
+              {/* 5. Fallback */}
               <Route path="*" element={<h1>404: Page Not Found</h1>} />
             </Routes>
           </main>

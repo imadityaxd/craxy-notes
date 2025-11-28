@@ -17,6 +17,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+
+
 // Initialize services we will need
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+//debug step- remember to remove it 
+window.auth = auth;

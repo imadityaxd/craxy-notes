@@ -4,7 +4,7 @@ import { db } from '../config/firebase.js';
 import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
 
 // Define the mandatory public Firestore collection path
-const PUBLIC_NOTES_COLLECTION = '/artifacts/appId/public/data/foet_notes'; // REPLACE 'appId' with your actual Firebase App ID
+const PUBLIC_NOTES_COLLECTION = '/artifacts/1:109691016066:web:8d14c48c05a2f0859f359b/public/data/foet_notes'; // REPLACE 'appId' with your actual Firebase App ID
 
 // --- FETCH NOTES (GET) ---
 export const getNotes = async (req, res) => {

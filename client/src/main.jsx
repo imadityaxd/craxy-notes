@@ -1,12 +1,14 @@
-// client/src/main.jsx
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
-import './styles/index.css'; // Import the global Tailwind CSS styles
+import './styles/index.css'; 
+import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    {/* CRITICAL: Wrap the entire application in the AuthProvider */}
+    <AuthProvider>
+        <App />
+    </AuthProvider>
   </React.StrictMode>,
 );
