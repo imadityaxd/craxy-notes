@@ -10,31 +10,41 @@ import { FOET_BRANCHES, getSubjects } from '../utils/syllabusData'; // Import ac
 const SEMESTERS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 // Component to display notes in a responsive multi-column grid
-const SubjectNotesGrid = ({ subject }) => {
+const SubjectNotesGrid = ({ subject, selectedBranch, selectedSemester }) => {
     
     const hasNotes = subject.items && subject.items.length > 0;
 
+    // FIND OFFICIAL SUBJECT NAME: Use the getSubjects helper to look up the official title
+    const officialSubjects = getSubjects(selectedBranch, selectedSemester);
+    const officialSubject = officialSubjects.find(s => s.code === subject.courseCode);
+    
+    // Fallback title: Use the official title if found, otherwise stick with the API title.
+    const displayTitle = officialSubject ? officialSubject.title : subject.title;
+
     return (
-        <div className="bg-white p-6 shadow-xl rounded-xl border border-gray-100">
-            <h3 className="text-2xl font-bold text-blue-700 mb-4 border-b pb-2">
-                {subject.courseCode}: {subject.title}
+        // Simplified shadow and padding for a cleaner look
+        <div className="bg-white p-4 sm:p-6 shadow-xl rounded-lg border border-gray-100">
+            <h3 className="text-xl sm:text-2xl font-bold text-blue-700 mb-3 border-b pb-2">
+                {/* CRITICAL FIX: Displaying Official Title */}
+                {subject.courseCode}: {displayTitle}
             </h3>
             
             {hasNotes ? (
                 // CRITICAL FIX: The multi-grid applies to the individual notes list (subject.items)
-                // Added 4 columns for extra-large screens (xl:grid-cols-4)
+                // Grid remains simple, prioritizing 2 columns over 3 on tablets for better card space.
                 <div className="grid gap-4 
                               grid-cols-1   /* Mobile (default) */ 
-                              md:grid-cols-2 /* Medium/Tablet */ 
+                              md:grid-cols-2 /* Medium/Tablet (2 columns) */ 
                               lg:grid-cols-3 /* Large Screens/Desktop (3 columns) */
                               xl:grid-cols-4 /* Extra Large Screens (4 columns) */
                               ">
                     {subject.items.map(note => (
-                        <NoteCard key={note.id} note={note} className="w-full" /> // Ensuring note card takes full cell width
+                        // NoteCard style handles the internal 'w-full' for its grid cell
+                        <NoteCard key={note.id} note={note} /> 
                     ))}
                 </div>
             ) : (
-                <p className="text-gray-400 italic">No files uploaded yet for this subject.</p>
+                <p className="text-gray-400 italic text-sm">No files uploaded yet for this subject.</p>
             )}
         </div>
     );
@@ -122,7 +132,8 @@ const NoteBrowser = () => {
         <div className="flex flex-col lg:flex-row min-h-full">
             
             {/* --- Sidebar Navigation (Hierarchy & Subject Filter) --- */}
-            <div className="w-full lg:w-80 bg-white p-4 shadow-2xl lg:h-screen lg:sticky lg:top-0 border-r border-gray-100">
+            {/* Sidebar width adjusted for better balance on desktop */}
+            <div className="w-full lg:w-72 bg-white p-4 shadow-2xl lg:h-screen lg:sticky lg:top-0 border-r border-gray-100">
                 <h3 className="text-xl font-bold text-blue-800 mb-4 border-b pb-2">FOET Hierarchy</h3>
                 
                 {/* Search Bar */}
@@ -209,38 +220,44 @@ const NoteBrowser = () => {
             </div>
             
             {/* --- Main Content Area (Notes List) --- */}
-            <div className="flex-1 p-4 sm:p-6 lg:p-10">
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+            {/* Reduced padding on mobile (p-4) but increased on large screens (lg:p-8) */}
+            <div className="flex-1 p-4 sm:p-6 lg:p-8"> 
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
                     {branchName} - Semester {selectedSemester || 'Select Below'}
                 </h1>
                 
                 {searchTerm && (
-                    <p className="text-lg font-semibold text-orange-600 mb-4">
+                    <p className="text-md font-semibold text-orange-600 mb-4">
                         Search results for: "{searchTerm}"
                     </p>
                 )}
 
-                <p className="text-lg text-gray-500 mb-8">
+                <p className="text-md text-gray-500 mb-6">
                     {selectedSubjectCode 
                         ? `Displaying filtered results for: ${selectedSubjectCode}` 
                         : 'Showing all subjects and available materials.'}
                 </p>
 
                 {!isFilterActive ? (
-                     <div className="text-center p-20 bg-blue-50 rounded-xl border border-blue-200">
+                     <div className="text-center p-10 sm:p-20 bg-blue-50 rounded-xl border border-blue-200">
                         <h3 className="text-xl font-semibold text-blue-700">Get Started</h3>
                         <p className="text-gray-600">Please select a **Branch** and **Semester** from the left panel to load the syllabus and available notes.</p>
                     </div>
                 ) : displayNotes.length === 0 ? (
-                    <div className="text-center p-20 bg-gray-100 rounded-xl">
+                    <div className="text-center p-10 sm:p-20 bg-gray-100 rounded-xl">
                         <h3 className="text-xl font-semibold text-gray-500">No Results Found</h3>
                         <p className="text-gray-400">Your search or filter combination yielded no available materials.</p>
                     </div>
                 ) : (
-                    <div className="space-y-8">
+                    <div className="space-y-6"> {/* Reduced space-y for mobile */}
                         {/* Map over the FILTERED notes list */}
                         {displayNotes.map(subject => (
-                            <SubjectNotesGrid key={subject.courseCode} subject={subject} />
+                            <SubjectNotesGrid 
+                                key={subject.courseCode} 
+                                subject={subject} 
+                                selectedBranch={selectedBranch} 
+                                selectedSemester={selectedSemester} 
+                            /> // Pass context to SubjectNotesGrid
                         ))}
                     </div>
                 )}
