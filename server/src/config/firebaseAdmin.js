@@ -11,10 +11,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // ---------------------------
 
+//service account key file name path here 
+const fileName2 = process.env.SERVICE_ACCOUNT_KEY_FILE;
+
 if (!admin.apps || !admin.apps.length) {
     
     // CRITICAL: Define the exact filename from your screenshot
-    const SERVICE_ACCOUNT_KEY_FILE = 'notes1-4d2cb-firebase-adminsdk-fbsvc-226feca038.json'; // <--- PASTE THE FULL FILENAME HERE
+    const SERVICE_ACCOUNT_KEY_FILE = `${fileName2}`; // <--- PASTE THE FULLJ FILENAME HERE
     const serviceAccountPath = path.resolve(__dirname, SERVICE_ACCOUNT_KEY_FILE);
 
     let credentials;
