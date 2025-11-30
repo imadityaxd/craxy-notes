@@ -12,7 +12,7 @@ import { FOET_BRANCHES, getSubjects } from '../utils/syllabusData';
 // Hardcoded lists for structural simplicity:
 const SEMESTERS = [1, 2, 3, 4, 5, 6, 7, 8];
 
-const API_UPLOAD_URL = 'http://localhost:5000/api/notes/upload';
+const API_UPLOAD_URL = 'https://craxy-notes-backend.onrender.com/api/notes/upload';
 
 const UploadForm = () => {
     const { isAuthenticated, isAdminOrContributor, getAuthHeaders, loading: authLoading } = useAuth();

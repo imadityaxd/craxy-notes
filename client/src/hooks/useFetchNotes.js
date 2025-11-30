@@ -6,7 +6,7 @@ import axios from 'axios';
 // import { useAuth } from '../context/AuthContext'; 
 
 // NOTE: Use the correct server URL for your environment
-const API_BASE_URL = 'http://localhost:5000/api/notes'; 
+const API_BASE_URL = 'https://craxy-notes-backend.onrender.com/api/notes'; //change this when the backend is live from localhost to that platform link
 
 const useFetchNotes = (branch, semester) => {
     const [notes, setNotes] = useState([]);
